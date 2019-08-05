@@ -14,15 +14,31 @@
  * limitations under the License.
  */
 
-importScripts('https://web-education-ar-demo.appspot.com/third_party/three.js/three.min.js');
-importScripts('https://web-education-ar-demo.appspot.com/third_party/draco/DRACOLoader.js');
-importScripts('https://web-education-ar-demo.appspot.com/third_party/draco/draco_decoder.js');
-importScripts('https://web-education-ar-demo.appspot.com/third_party/draco/geometry_helper.js');
+importScripts('../third_party/three.js/three.min.js');
+importScripts('../third_party/draco/DRACOLoader.js');
+importScripts('../third_party/draco/draco_decoder.js');
+importScripts('../third_party/draco/geometry_helper.js');
 
-onmessage = function(e) {
-  THREE.DRACOLoader.setDecoderPath('../../public/third_party/draco/');
+onmessage = function (e) {
+
+
+
+
+  THREE.DRACOLoader.setDecoderPath('../third_party/draco/');
+
   let dracoLoader = new THREE.DRACOLoader();
-  dracoLoader.load('../' + e.data.path, geometry => {
+  this.console.log(e.data.path)
+  dracoLoader.load(e.data.path, geometry => {
+    //
+    geometry.computeVertexNormals();
+
+    var material = new THREE.MeshStandardMaterial({
+      vertexColors: THREE.VertexColors
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    //
     postMessage(geometry);
     THREE.DRACOLoader.releaseDecoderModule();
   });
